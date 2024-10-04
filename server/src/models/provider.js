@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
+
 const providerSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -13,18 +14,19 @@ const providerSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        requied:true,
+        required:true,
         trim:true,
-        min:8
+        minlength: 8 // correct field validator
     },
     address:{
         type:String,
         required:true
     },
     phoneNumber:{
-        type:Number,
+        type:String,  // using string to enforce digit count
         required:true,
-        min:10,
+        minlength:10,
+        maxlength:10 // ensures exactly 10 digits
     },
     rating:{
         type:String,
@@ -37,16 +39,21 @@ const providerSchema = new mongoose.Schema({
     providerLogo:{
         type:String
     }
+})
 
-})
+// Pre-save hook to hash the password if modified
 providerSchema.pre("save", async function(next){
-    const provider = this
+    const provider = this;
     if(!provider.isModified("password")){
-        next()
+        return next();
     }
-    provider.password = await bcrypt.hash(provider.password,10)
-})
+    provider.password = await bcrypt.hash(provider.password, 10);
+    next();
+});
+
+// Method to generate JWT token for a provider
 providerSchema.methods.generateJwtToken = function(){
-    return jwt.sign({id:this._id},process.env.SECRET_KEY,{expiresIn:'5d'});
+    return jwt.sign({id: this._id}, process.env.SECRET_KEY, {expiresIn: '5d'});
 }
-module.exports = mongoose.model('providers',providerSchema)
+
+module.exports = mongoose.model('providers', providerSchema)
