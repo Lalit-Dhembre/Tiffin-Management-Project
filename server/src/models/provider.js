@@ -53,7 +53,8 @@ providerSchema.pre("save", async function(next){
 
 // Method to generate JWT token for a provider
 providerSchema.methods.generateJwtToken = function(){
-    return jwt.sign({id: this._id}, process.env.SECRET_KEY, {expiresIn: '5d'});
+    console.log("here")
+    return jwt.sign({id: this._id}, "1234", {expiresIn: '5d'});
 }
 
 module.exports = mongoose.model('providers', providerSchema)

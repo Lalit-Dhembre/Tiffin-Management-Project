@@ -5,6 +5,7 @@ const generateToken = require('../utils/generateToken');
 const uploads = require('../utils/cloudinaryUpload')
 exports.registerUser = async(req,res) =>{
     try {
+        console.log(req.body);
         const {name,email,password,phoneNumber} = req.body;
         const userExists = await userModel.findOne({email})
         // Checking If User Already Exist With Entered Email

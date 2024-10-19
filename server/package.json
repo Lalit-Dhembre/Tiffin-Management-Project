@@ -4,7 +4,7 @@
   "description": "Tiffin Server Application",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "nodemon ./src/index.js",
     "dev": "nodemon ./src/index.js"
   },
   "author": "Anas",
@@ -22,8 +22,14 @@
     "mongoose": "^8.7.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.8.0",
-    "nodemon": "^2.0.20",
+    "nodemon": "^2.0.22",
     "razorpay": "^2.8.4",
     "streamifier": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cron": "^2.0.1",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.12"
   }
 }

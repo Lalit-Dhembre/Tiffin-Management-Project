@@ -1,5 +1,6 @@
 const generateToken = (res,statusCode,user,isUser) =>{
     try{
+    
         let token = ''
         let text = ''
         if(isUser){

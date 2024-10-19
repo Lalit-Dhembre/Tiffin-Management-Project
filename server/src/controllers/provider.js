@@ -6,9 +6,11 @@ const uploads = require('../utils/cloudinaryUpload');
 // const { sendEmail } = require('../utils/sendEmail');
 exports.registerProvider = async(req,res) =>{
     try {
+        console.log(req.body)
         const {name,email,password,phoneNumber,address} = req.body;
         const providerExists = await providerModel.findOne({email})
         let providerLogo = "";
+        console.log(req.body);
         if(req.file){
             const location = req.file.buffer;
             const result = await uploads(location);
@@ -42,6 +44,7 @@ exports.registerProvider = async(req,res) =>{
 
         generateToken(res,201,provider,false)
     }catch (error){
+        console.log("provider")
         return res.status(500).json({message:error.message})
     }
 }
@@ -89,6 +92,7 @@ exports.getAllProviders = async(req,res) =>{
 }
 exports.getProviderById = async(req,res) =>{
     try {
+        console.log(req.body);
         const {_id} = req.params;
 
         const provider = await providerModel.findById(_id);
