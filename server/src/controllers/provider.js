@@ -8,22 +8,25 @@ exports.registerProvider = async(req,res) =>{
     try {
         console.log(req.body)
         const {name,email,password,phoneNumber,address} = req.body;
-        const providerExists = await providerModel.findOne({email})
+        // const providerExists = await providerModel.findOne({email})
+        console.log("provider exist")
         let providerLogo = "";
-        console.log(req.body);
-        if(req.file){
-            const location = req.file.buffer;
-            const result = await uploads(location);
-            providerLogo = result.url;
-        }
+        // if(req.file){
+        //     const location = req.file.buffer;
+        //     const result = await uploads(location);
+        //     providerLogo = result.url;
+        //     console.log("provider logo")
+        // }
         // Checking If Proiver Already Exist With Entered Email
-        if(providerExists)
-            return res.status(400).json({message:"Provider Already Exists"});
+        // if(providerExists)
+        //     return res.status(400).json({message:"Provider Already Exists"});
 
-        // Checking if email exists as user
+        // Checking if email exists as user 
         const isUser = await userModel.findOne({email});
-        if(isUser)
-            return res.status(400).json({message:"Invalid email! Email exists as user"});
+        console.log("is User reached",isUser)
+        if(!isUser){
+            console.log("is User reached 2")
+            return res.status(400).json({message:"Invalid email! Email exists as user"});}
         const data = {
             name,
             email,
@@ -33,7 +36,7 @@ exports.registerProvider = async(req,res) =>{
             providerLogo
         }
         const provider = await providerModel.create(data);
-
+        console.log("provider created")
         // Disabled Email for authorization
 
         // let subject = "Email Verification For Registration on Tiffin Wala "
@@ -44,22 +47,25 @@ exports.registerProvider = async(req,res) =>{
 
         generateToken(res,201,provider,false)
     }catch (error){
-        console.log("provider")
+        console.log("error:",error)
         return res.status(500).json({message:error.message})
     }
 }
 exports.loginProvider = async(req,res) =>{
     try {
+        console.log("login")
+        console.log(req.body)
         const {email, password} = req.body;
         const provider = await providerModel.findOne({email});
+        console.log([provider])
         if(!provider)
             return res.status(404).json({message:"Invalid Email or Password"});
         const passwordMatch = await bcrypt.compare(password,provider.password)
         if(!passwordMatch)
             return res.status(400).json({message:"Invalid Email or Password"})
-        if(!provider.isAuthorized){
-            return res.status(400).json({message:"You are not authorized"})
-        }
+        // if(!provider.isAuthorized){
+        //     return res.status(400).json({message:"You are not authorized"})
+        // }
         generateToken(res,200,provider,false)
     } catch (error) {
         return res.status(500).json({message:error.message})

@@ -38,6 +38,7 @@ userSchema.pre("save", async function(next){
     user.password = await bcrypt.hash(user.password,10)
 })
 userSchema.methods.generateJwtToken = function(){
+    console.log("token generation")
     return jwt.sign({id:this._id},"1234",{expiresIn:'5d'});
 }
 module.exports = mongoose.model('users',userSchema)

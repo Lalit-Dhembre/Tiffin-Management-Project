@@ -3,58 +3,73 @@ const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
 
 const providerSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
+    name: {
+        type: String,
+        required: [true, 'Name is required'],
+        trim: true
     },
-    email:{
-        type:String,
-        required:true,
-        trim:true
+    email: {
+        type: String,
+        required: [true, 'Email is required'],
+        unique: true,
+        trim: true,
+        lowercase: true,
+        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
     },
-    password:{
-        type:String,
-        required:true,
-        trim:true,
-        minlength: 8 // correct field validator
+    password: {
+        type: String,
+        required: [true, 'Password is required'],
+        trim: true,
     },
-    address:{
-        type:String,
-        required:true
+    address: {
+        type: String,
+        required: [true, 'Address is required'],
+        trim: true
     },
-    phoneNumber:{
-        type:String,  // using string to enforce digit count
-        required:true,
-        minlength:10,
-        maxlength:10 // ensures exactly 10 digits
+    phoneNumber: {
+        type: String,
+        required: [true, 'Phone number is required'],
+        trim: true,
     },
-    rating:{
-        type:String,
-        default: "0"
+    rating: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5
     },
-    isAuthorized:{
-        type:Boolean,
-        default:true
+    isAuthorized: {
+        type: Boolean,
+        default: false
     },
-    providerLogo:{
-        type:String
+    providerLogo: {
+        type: String,
+        trim: true
+    }
+}, {
+    timestamps: true
+})
+
+providerSchema.pre("save", async function(next) {
+    if (!this.isModified("password")) return next();
+    
+    try {
+        this.password = await bcrypt.hash(this.password, 10);
+        next();
+    } catch (error) {
+        next(error);
     }
 })
 
-// Pre-save hook to hash the password if modified
-providerSchema.pre("save", async function(next){
-    const provider = this;
-    if(!provider.isModified("password")){
-        return next();
-    }
-    provider.password = await bcrypt.hash(provider.password, 10);
-    next();
-});
-
-// Method to generate JWT token for a provider
-providerSchema.methods.generateJwtToken = function(){
-    console.log("here")
-    return jwt.sign({id: this._id}, "1234", {expiresIn: '5d'});
+providerSchema.methods.generateJwtToken = function() {
+    return jwt.sign(
+        { id: this._id },
+        process.env.JWT_SECRET || "1234",
+        { expiresIn: '5d' }
+    );
 }
 
-module.exports = mongoose.model('providers', providerSchema)
+providerSchema.methods.comparePassword = async function(candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
+}
+
+module.exports = mongoose.model('Provider', providerSchema)

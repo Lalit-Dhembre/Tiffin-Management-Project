@@ -4,9 +4,9 @@ const streamifier = require('streamifier')
 
 dotenv.config()
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: "dmz5jgq0x",
+    api_key: "983225417512774",
+    api_secret: "rsxOOLrhZt19zrG-84CxHAPQWeY"
 })
 const uploads = (buffer) =>{
     return new Promise((resolve, reject) => {

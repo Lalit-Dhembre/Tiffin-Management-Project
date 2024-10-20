@@ -1,18 +1,16 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
-  foods: undefined,
+  foods: [],  // Initialize foods as an empty array
   loading: false,
   food: undefined,
   error: "",
 };
+
 const getNewFoods = (id, foods) => {
-  let foodList = [];
-
-  foodList = foods.filter((food) => id !== food._id);
-
-  return foodList;
+  return foods.filter((food) => id !== food._id);
 };
+
 const foodSlice = createSlice({
   name: "Foods",
   initialState,
@@ -21,11 +19,13 @@ const foodSlice = createSlice({
       state.loading = true;
     },
     foodSuccess: (state, action) => {
-      state.foods = action.payload.foods;
+      state.foods = action.payload.foods; // Assuming action.payload.foods is an array
       state.loading = false;
     },
     addFoodSuccess: (state, action) => {
-      state.foods.push(action.payload.food);
+      console.log("state", state);
+      console.log("action", action);
+      state.foods.push(action.payload.food); // Now foods is an array, so push will work
       state.loading = false;
     },
     deleteFoodSuccess: (state, action) => {
@@ -37,7 +37,7 @@ const foodSlice = createSlice({
       state.loading = false;
     },
     foodFail: (state, action) => {
-      state.foods = undefined;
+      state.foods = []; // Clear the foods array in case of failure
       state.loading = false;
       state.error = action.payload;
     },
