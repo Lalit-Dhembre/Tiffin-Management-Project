@@ -1,4 +1,4 @@
-const foodModel = require('../models/food');
+const Food = require('../models/food');  // Adjust the path as necessary
 const uploads = require('../utils/cloudinaryUpload');
 exports.addFood = async(req,res) =>{
     try {
@@ -33,18 +33,29 @@ exports.addFood = async(req,res) =>{
         return res.status(500).json({message:error.message});
     }
 }
-exports.getAllFoodsOfProvider = async(req,res) =>{
+exports.getAllFoodsOfProvider = async (req, res) => {
     try {
-        const {_id} = req.params;
-        const foods = await foodModel.find({provider:_id}).populate("provider");
+        const { _id } = req.params;
+        console.log(_id);
 
-        if(!foods)
-            return res.status(404).json({message:"NO Food Found"})
-        return res.status(200).json({foods});
+        // Query the Food model to get foods by provider ID
+        const foods = await Food.find({ provider: _id }).populate("provider");
+        console.log(foods);
+
+        // Check if foods were found
+        if (!foods || foods.length === 0) {
+            console.log("array empty")
+            return res.status(404).json({ message: "NO Food Found" });
+        }
+
+        // Return the list of foods
+        return res.status(200).json({ foods });
     } catch (error) {
-        return res.status(500).json({message:error.message});
+        // Handle any errors
+        console.log(error);
+        return res.status(500).json({ message: error.message });
     }
-}
+};
 
 exports.getFoodById = async(req,res) =>{
     try {

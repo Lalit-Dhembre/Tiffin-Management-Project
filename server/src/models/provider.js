@@ -72,4 +72,4 @@ providerSchema.methods.comparePassword = async function(candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 }
 
-module.exports = mongoose.model('Provider', providerSchema)
+module.exports = mongoose.model("providers", providerSchema);

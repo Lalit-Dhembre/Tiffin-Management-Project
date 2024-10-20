@@ -28,6 +28,7 @@ function MealSubscription() {
     }
   }, [user])
   const food = useSelector((state) => state.foods.food)
+  console.log(food)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -37,22 +38,23 @@ function MealSubscription() {
       toast.error("Plzz Login to Place a order")
       navigate('/signin')
     }
-    if (quantity > food.quantity)
-      return toast.error("Cannot Provide in this much Quantity")
-    let totalAmount = food.price * quantity
+    // if (quantity > food.quantity)
+    //   return toast.error("Cannot Provide in this much Quantity")
+    // let totalAmount = food.price * quantity
     const data = {
       user: user._id,
-      food: food._id,
-      provider: food.provider,
+      // food: food._id,
+      // provider: food.provider,
       quantity,
       address,
       time,
       date,
-      totalAmount
+      // totalAmount
     }
+    console.log(data)
     let options = {
       "key": 'rzp_test_yu67T9aDVZ2U2O',
-      "amount": Number(totalAmount) * 100,
+      // "amount": Number(totalAmount) * 100,
       "currency": "INR",
       "name": "TiffinWala",
       "description": "Test Transaction",
